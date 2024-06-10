@@ -26,7 +26,7 @@ ubuntu       20.04     5f5250218d28   6 days ago   72.8MB
 $ sudo docker run -ti --rm ubuntu:20.04 /bin/bash
 ```
 
-После того, как зашли в терминал в ubuntu в докере, можно вызвать разные команды
+После того, как зашли в терминал в ubuntu в докере, можно например проверить версию ubuntu
 
 ```
 root@6c663a937575:/# cat /etc/os-release
@@ -108,4 +108,56 @@ $ sudo docker rm Ubuntu
 Ubuntu
 $ sudo docker ps -a
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+
+## Portainer
+
+Качаем образ
+
+```
+$ sudo docker pull portainer/portainer-ce:latest
+...
+$ sudo docker images
+REPOSITORY               TAG       IMAGE ID       CREATED       SIZE
+ubuntu                   20.04     5f5250218d28   6 days ago    72.8MB
+portainer/portainer-ce   latest    a3f85c245ec3   7 weeks ago   293MB
+```
+
+Создаём папку, куда пробросим volume для портейнера
+
+```
+$ mkdir ./portainer_data
+```
+
+Запустим контейнер в detached режиме, пробросив порты 8000 и 9443 на локальную машину, указав, что контейнер должен перезапускаться всегда, а также данные в директории `/data` в контейнере будут проброшены в папку `./portainer_data` на локальной машине. `/var/run/docker.sock:/var/run/docker.sock` позволяет Portainer взаимодействовать с Docker на локальном хосте
+
+```
+$ sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v ./portainer_data:/data portainer/portainer-ce:latest
+9504b302...
+$ sudo docker ps
+CONTAINER ID   IMAGE                           COMMAND        CREATED         STATUS         PORTS                                                                                            NAMES
+9504b302b84f   portainer/portainer-ce:latest   "/portainer"   7 seconds ago   Up 6 seconds   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp, 0.0.0.0:9443->9443/tcp, :::9443->9443/tcp, 9000/tcp   portainer
+```
+
+Проверим у себя папку `./portainer_data`
+
+```
+$ ls ./portainer_data/
+bin  certs  chisel  compose  docker_config  portainer.db  portainer.key  portainer.pub  tls
+```
+
+Теперь можно перейти по адресу https://localhost:9443, чтобы проверить работоспособность портейнера
+
+![Portainer](./img/portainer.png)
+
+Остановим контейнер, удалим данные
+
+```
+$ sudo docker stop portainer
+portainer
+$ sudo docker rm portainer
+portainer
+$ sudo rm -R ./portainer_data/
+$ ls ./portainer_data
+ls: невозможно получить доступ к './portainer_data': Нет такого файла или каталога
 ```
