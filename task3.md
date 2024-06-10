@@ -2,7 +2,7 @@
 
 Получилось 3 контейнера - `portainer`, `portainer-agent`, `clickhouse-server`
 
-Создаем docker-compose.yaml
+Создаем [docker-compose.yaml](./docker-compose.yaml)
 
 ```
 $ vi docker-compose.yaml
