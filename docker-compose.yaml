@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+    ports:
+      - "8000:8000"
+      - "9443:9443"
+    restart: always
+    
+  portainer_agent:
+    image: portainer/agent:2.19.5
+    container_name: portainer-agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "9001:9001"
+    restart: always
+    
+  clickhouse-server:
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse-server
+    cpus: "2"
+    mem_limit: 2g
+    ports:
+      - '8123:8123'
+      - '9000:9000'
+    volumes:
+      - ./ch_db:/var/lib/clickhouse
+    ulimits:
+      nofile: 262144
