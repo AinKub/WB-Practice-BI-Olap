@@ -15,3 +15,9 @@ zookeeper           zookeeper:latest               "/docker-entrypoint.…"   zo
 Проверяем и подключаемся
 
 ![Success connection to kafka](./img/success_connection_kafka.png "Успешно подключились к кафке")
+
+## 2. Создаем топик
+
+Сделал через offset explorer
+
+![Create topic](./img/create_topic.png "Создал топик ratingWh")
