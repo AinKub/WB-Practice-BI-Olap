@@ -1,4 +1,4 @@
-# WB-Practice-BI-Olap
+# Работа с докером и docker compose
 
 ## Задание 2 (2 контейнера через docker)
 
