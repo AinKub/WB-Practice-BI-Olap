@@ -7,3 +7,7 @@
 ## Kafka
 
 ✉️  [Ссылка на работу](./kafka/readme.md)
+
+## Clickhouse
+
+💾 [Ссылка на работу](./clickhouse/readme.md)
