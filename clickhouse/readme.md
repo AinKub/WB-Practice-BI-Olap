@@ -1,12 +1,23 @@
 # Работа с Clickhouse
 
-Поднимем clickhouse через docker:
+## 1. Поднимаем clickhouse через docker
+
+Соберем образ и пробросим туда измененный [users.xml](./users.xml), чтобы мы могли из-под пользователя default назначить все права новому администратору
 
 ```
 docker volume create clickhouse_data
-docker run -d --name clickhouse -p 18123:8123 -v clickhouse_data:/var/lib/clickouse --ulimit nofile=262144:262144 clickhouse/clickhouse-server
+docker build -t clickhouse:latest .
+docker run -d --name clickhouse -p 18123:8123 -v clickhouse_data:/var/lib/clickouse --ulimit nofile=262144:262144 clickhouse:latest
 ```
 
 Проверим, что clickhouse поднят и к нему можно подключиться:
 
 ![Clickhouse поднят](./img/connect_clickhouse.png "Clickhouse поднят")
+
+## 2. Создаем и настраиваем пользователя-администратора
+
+Выполняем скрипт [task_2.sql](./scripts/task_2.sql)
+
+Подключаемся под clickhouse_admin и проверяем его права:
+
+![Права clickhouse_admin](./img/clickhouse_admin.png "Права clickhouse_admin")
