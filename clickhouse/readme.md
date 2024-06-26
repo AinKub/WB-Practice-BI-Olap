@@ -51,7 +51,7 @@ $ source venv/bin/activate
 
 > Для Windows 3я команда следующая: `.\venv\Scripts\activate.ps1`
 
-Запустим скрипт, который под пользователем stg_writer заливает данные в буферную таблицу:
+Запустим скрипт [fill_stg.py](./py_scripts/fill_stg.py), который под пользователем `stg_writer` заливает данные в буферную таблицу:
 
 ```
 python3 fill_stg.py
@@ -62,3 +62,13 @@ python3 fill_stg.py
 ![Вставка в direct_log](./img/insert_to_direct_log.png "Вставка в direct_log")
 
 ![Вставка в stg из буферной таблицы](./img/insert_to_stg.png "Вставка в stg из буферной таблицы")
+
+## 6 и 7. Создаём материализованное представление и переливаем с помощью него данные из stg в history и current
+
+Выполняем скрипт [task_6.sql](./scripts/task_6.sql)
+
+Запускаем [fill_stg.py](./py_scripts/fill_stg.py) и через некоторое время проверяем:
+
+![Вставка в history из materialized view](./img/insert_to_history.png "Вставка в history из materialized view")
+
+![Вставка в current из materialized view](./img/insert_to_current.png "Вставка в current из materialized view")
