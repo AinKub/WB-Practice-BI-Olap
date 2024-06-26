@@ -21,3 +21,13 @@ docker run -d --name clickhouse -p 18123:8123 -v clickhouse_data:/var/lib/clicko
 Подключаемся под clickhouse_admin и проверяем его права:
 
 ![Права clickhouse_admin](./img/clickhouse_admin.png "Права clickhouse_admin")
+
+## 3. Создаем необходимые слои и таблицы
+
+Создаем базы `stg`, `history`, `current` и `direct_log`. В каждом слое создаем таблицу `rating_wh_by_suppliers` - туда будем складывать что-то похожее на оценку блоков поставщиками.
+
+Выполняем скрипт [task_3.sql](./scripts/task_3.sql)
+
+Должна получиться следующая схема:
+
+![Базы данных и таблицы](./img/create_databases_and_tables.png "Базы данных и таблицы")
