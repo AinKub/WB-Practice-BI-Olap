@@ -1,0 +1,10 @@
+{
+  "server": [
+    {
+      "host": "localhost",
+      "user": "stg_writer",
+      "password": "stg_qwerty",
+      "port": 19000
+    }
+  ]
+}

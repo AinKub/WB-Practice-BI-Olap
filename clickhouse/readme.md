@@ -7,7 +7,7 @@
 ```
 docker volume create clickhouse_data
 docker build -t clickhouse:latest .
-docker run -d --name clickhouse -p 18123:8123 -v clickhouse_data:/var/lib/clickouse --ulimit nofile=262144:262144 clickhouse:latest
+docker run -d --name clickhouse -p 18123:8123 -p 19000:9000 -v clickhouse_data:/var/lib/clickouse --ulimit nofile=262144:262144 clickhouse:latest
 ```
 
 Проверим, что clickhouse поднят и к нему можно подключиться:
@@ -38,3 +38,27 @@ docker run -d --name clickhouse -p 18123:8123 -v clickhouse_data:/var/lib/clicko
 
 Выполняем скрипт [task_4.sql](./scripts/task_4.sql)
 
+## 5. Заполним stg слой через буферную таблицу
+
+Подготовим окружение:
+
+```
+$ cd py_scripts
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip install clickhouse-driver clickhouse-cityhash lz4 numpy pandas
+```
+
+> Для Windows 3я команда следующая: `.\venv\Scripts\activate.ps1`
+
+Запустим скрипт, который под пользователем stg_writer заливает данные в буферную таблицу:
+
+```
+python3 fill_stg.py
+```
+
+Проверим:
+
+![Вставка в direct_log](./img/insert_to_direct_log.png "Вставка в direct_log")
+
+![Вставка в stg из буферной таблицы](./img/insert_to_stg.png "Вставка в stg из буферной таблицы")
