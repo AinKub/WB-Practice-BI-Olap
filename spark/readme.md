@@ -25,3 +25,15 @@ $ source venv/bin/activate
 В kafka должны появиться сообщения:
 
 ![shkCreate topic](./img/kafka.png)
+
+Затем подготовим кликхаус, в который будем заливать данные спарком. Поднимем его:
+
+```
+cd docker-compose/clickhouse/
+docker build -t clickhouse:latest .
+docker run -d --name clickhouse -p 8123:8123 -p 9000:9000 -v clickhouse_data:/var/lib/clickouse --ulimit nofile=262144:262144 clickhouse:latest
+```
+
+Создадим пользователя, таблицы, назначим необходимые права, выполнив скрипт [init.sql](./docker-compose/clickhouse/init.sql)
+
+Также загрузим в таблицу `datamart.volume_by_nm` объемы через импорт csv
