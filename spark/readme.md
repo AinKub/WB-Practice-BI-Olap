@@ -39,3 +39,17 @@ docker run -d --name clickhouse -p 8123:8123 -p 9000:9000 -v clickhouse_data:/va
 Создадим пользователя, таблицы, назначим необходимые права, выполнив скрипт [init.sql](./docker-compose/clickhouse/init.sql)
 
 Также загрузим в таблицу `datamart.volume_by_nm` объемы через импорт csv
+
+## 3. Разворачиваем Spark
+
+В директории `spark`, где лежит [docker-compose файл](./docker-compose/spark/docker-compose.yml), необходимо создать файл .env и прописать там имя компьютера: `SPARK_HOSTNAME=YOUR_HOSTNAME`
+
+Затем поднять командой:
+
+```
+docker compose up -d
+```
+
+Теперь можно зайти по адресу http://YOUR_HOSTNAME:8080:
+
+![Spark master](./img/spark_master.png)
