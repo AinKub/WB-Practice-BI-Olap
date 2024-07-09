@@ -73,4 +73,4 @@ spark-submit --master spark://spark-master:7077  \
 
 И появились данные в таблице `stage.raw_shkCreate_edu_7`:
 
-[raw_shkCreate_edu_7](./img/raw_shkCreate_edu_7.png)
+![raw_shkCreate_edu_7](./img/raw_shkCreate_edu_7.png)
