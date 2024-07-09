@@ -20,14 +20,6 @@ with open('/opt/spark/Streams/credentials.json') as json_file:
 ch_db_name = "stage"  # Схема на локальном клике
 ch_dst_table = "raw_shkCreate_edu_7"
 
-client = Client(сonnect_settings['ch'][0]['host'],
-                user=сonnect_settings['ch'][0]['user'],
-                password=сonnect_settings['ch'][0]['password'],
-                verify=False,
-                database=ch_db_name,
-                settings={"numpy_columns": True, 'use_numpy': True},
-                compression=True)
-
 client_local = Client(сonnect_settings['ch_local'][0]['host'],
                       user=сonnect_settings['ch_local'][0]['user'],
                       password=сonnect_settings['ch_local'][0]['password'],
@@ -40,10 +32,10 @@ client_local = Client(сonnect_settings['ch_local'][0]['host'],
 spark_app_name = "shkCreate_edu_7"
 spark_ui_port = "8081"
 
-kafka_host = сonnect_settings['kafka'][0]['host']
-kafka_port = сonnect_settings['kafka'][0]['port']
-kafka_user = сonnect_settings['kafka'][0]['user']
-kafka_password = сonnect_settings['kafka'][0]['password']
+kafka_host = сonnect_settings['kafka_local'][0]['host']
+kafka_port = сonnect_settings['kafka_local'][0]['port']
+kafka_user = сonnect_settings['kafka_local'][0]['user']
+kafka_password = сonnect_settings['kafka_local'][0]['password']
 kafka_topic = "shkCreate"
 kafka_batch_size = 5000
 processing_time = "5 second"
@@ -122,7 +114,7 @@ sql_tmp_create = """create table tmp.tmp_shkCreate_edu_7
         nm_id           UInt64,
         dt              DateTime,
         employee_id     UInt64,
-        place_id        UInt64,
+        place_cod       UInt64,
         state_id LowCardinality(String),
         gi_id           UInt64,
         supplier_id     UInt32,
@@ -137,9 +129,9 @@ sql_tmp_create = """create table tmp.tmp_shkCreate_edu_7
 """
 
 sql_insert = f"""insert into {ch_db_name}.{ch_dst_table}
-    select shk_id, barcode, chrt_id, nm_id, dt, employee_id, place_id, state_id
-        , gi_id, supplier_id, invdet_id, expire_dt, has_excise
-        , supplier_box_id, is_surplus, ext_ids, volume_sm, 'shkCreate_kafka' entry
+    select shk_id, barcode, chrt_id, nm_id, dt, employee_id, place_cod, state_id
+        , gi_id, supplier_id, invdet_id, expire_dt, has_excise, supplier_box_id 
+        , is_surplus, ext_ids, volume_sm, 'shkCreate_kafka' entry, null dt_load  -- вместо null вставится значение по дефолту
     from tmp.tmp_shkCreate_edu_7 t1
     left any join
     (
@@ -150,7 +142,7 @@ sql_insert = f"""insert into {ch_db_name}.{ch_dst_table}
     on t1.nm_id = vols.nm_id
 """
 
-client.execute("drop table if exists tmp.tmp_shkCreate_edu_7")
+client_local.execute("drop table if exists tmp.tmp_shkCreate_edu_7")
 
 def column_filter(df):
     # select только нужные колонки.
@@ -171,7 +163,7 @@ def load_to_ch(df):
     df_pd.has_excise = df_pd.has_excise.astype(bool)
     df_pd.ext_ids = df_pd.ext_ids.fillna('').astype(str)
 
-    client.insert_dataframe('INSERT INTO tmp.tmp_shkCreate_edu_7 VALUES', df_pd)
+    client_local.insert_dataframe('INSERT INTO tmp.tmp_shkCreate_edu_7 VALUES', df_pd)
 
 # Функция обработки batch. На вход получает dataframe-spark.
 def foreach_batch_function(df2, epoch_id):
@@ -185,14 +177,14 @@ def foreach_batch_function(df2, epoch_id):
         # Убираем не нужные колонки.
         df2 = column_filter(df2)
 
-        client.execute(sql_tmp_create)
+        client_local.execute(sql_tmp_create)
 
         # Записываем dataframe в ch.
         load_to_ch(df2)
 
         # Добавляем объем и записываем в конечную таблицу.
-        client.execute(sql_insert)
-        client.execute("drop table if exists tmp.tmp_shkCreate_edu_7")
+        client_local.execute(sql_insert)
+        client_local.execute("drop table if exists tmp.tmp_shkCreate_edu_7")
 
 
 # Описание как создаются микробатчи. processing_time - задается вначале скрипта

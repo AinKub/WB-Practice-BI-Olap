@@ -1,10 +1,10 @@
-CREATE USER spark IDENTIFIED WITH sha256_password BY 'spark7';
+CREATE USER IF NOT EXISTS spark IDENTIFIED WITH sha256_password BY 'spark7';
 
-create database stage;
+create database if not exists stage;
 
-create database tmp;
+create database if not exists tmp;
 
-create database datamart;
+create database if not exists datamart;
 
 create table if not exists stage.raw_shkCreate_edu_7
 (
@@ -34,7 +34,7 @@ TTL dt_load + toIntervalDay(7)
 SETTINGS index_granularity = 8192;
 
 
-CREATE TABLE datamart.volume_by_nm
+create table if not exists datamart.volume_by_nm
 (
     `nm_id` UInt64,
     `vol` UInt64,
@@ -45,8 +45,8 @@ CREATE TABLE datamart.volume_by_nm
     `src_table` LowCardinality(String),
     `src_metric` UInt8
 )
-ENGINE = ReplacingMergeTree()
-ORDER BY nm_id
+engine = ReplacingMergeTree()
+order by nm_id
 SETTINGS index_granularity = 8192;
 
 
