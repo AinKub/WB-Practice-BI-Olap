@@ -1,0 +1,19 @@
+{
+    "clickhouse": [
+      {
+        "host": "clickhouse_for_airflow",
+        "user": "airflow",
+        "password": "airflow1234",
+        "port": "9000"
+      }
+    ],
+    "postgres": [
+      {
+        "host": "report_postgres_for_airflow",
+        "user": "airflow",
+        "password": "airflow12345",
+        "port": "5432",
+        "database": "default"
+      }
+    ]
+}
