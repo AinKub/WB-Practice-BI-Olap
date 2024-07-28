@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  report_postgres:
+    image: postgres:13
+    container_name: report_postgres_for_airflow
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-default}
+      POSTGRES_USER: ${POSTGRES_USER:-default}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-default}
+    volumes:
+      - ./init_pg.sql:/docker-entrypoint-initdb.d/init_pg.sql
+      - report-postgres-for-airflow-data:/var/lib/postgresql/data
+    ports:
+      - 55432:5432
+
+volumes:
+  report-postgres-for-airflow-data:
+    name: report-postgres-for-airflow-data
+  
+networks:
+  default:
+    name: airflow_network
+    external: true
+    
