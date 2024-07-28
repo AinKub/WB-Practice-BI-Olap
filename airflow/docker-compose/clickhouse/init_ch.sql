@@ -6,7 +6,7 @@ create table if not exists penalties
     shk_id                UInt64,
     creation_date         DateTime,
     type                  LowCardinality(String),
-    warehouse_penalties   Array(String),
+    penalties             String,
     warehouse_updated_dt  DateTime
 )
 engine ReplacingMergeTree
