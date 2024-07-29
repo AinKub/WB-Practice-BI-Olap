@@ -19,3 +19,7 @@
 ## Airflow
 
 🪁 [Ссылка на работу](./airflow/readme.md)
+
+## Datalens
+
+📊 [Ссылка на работу](./datalens/readme.md)
